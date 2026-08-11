@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://www.slipknot1.cz/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.slipknot1.cz/pro-poradatele.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Detaily akcí a novinek (volitelně doplň nové podle data.json) -->
+  <url><loc>https://www.slipknot1.cz/event.html?id=korn-sk-a-eyeless-na-melodce</loc><priority>0.6</priority></url>
+  <url><loc>https://www.slipknot1.cz/event.html?id=ceske-budejovice-eyeless-pantera-czech-tribute</loc><priority>0.6</priority></url>
+  <url><loc>https://www.slipknot1.cz/post.html?id=prvni-show-na-tyneckym-mazci</loc><priority>0.5</priority></url>
+  <url><loc>https://www.slipknot1.cz/post.html?id=bud-7</loc><priority>0.5</priority></url>
+  <url><loc>https://www.slipknot1.cz/post.html?id=hleda-se-8-corey</loc><priority>0.5</priority></url>
+</urlset>
