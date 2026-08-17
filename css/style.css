@@ -200,9 +200,9 @@ h1, h2, h3 { font-family: var(--font-head); font-weight: 500; margin: 0; line-he
 .epk-intro { color: var(--muted); margin: 0 0 18px; }
 .share { margin-top: 28px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .share span { color: var(--muted); font-size: 14px; text-transform: uppercase; letter-spacing: .05em; }
-.share a { border: 1px solid #555; border-radius: 2px; padding: 8px 14px; font-size: 15px; }
-.share a:hover { border-color: var(--text); }
-.req-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin: 10px 0 32px; }
+.share a, .share-copy { border: 1px solid #555; border-radius: 2px; padding: 8px 14px; font-size: 15px; color: var(--text); background: none; font-family: var(--font-body); cursor: pointer; }
+.share a:hover, .share-copy:hover { border-color: var(--text); }
+.req-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; margin: 10px 0 32px; }
 .req h3 { font-family: var(--font-head); font-weight: 500; font-size: 22px; margin-bottom: 10px; }
 .req p { margin: 0; color: var(--muted); }
 .docs { display: flex; gap: 14px; flex-wrap: wrap; }

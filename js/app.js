@@ -55,23 +55,26 @@
     }).join("");
   }
 
-  /* ---- Header/patička + mobilní menu --------------------------------- */
+  /* ---- Mobilní menu (nezávislé na načtení dat – funguje vždy) --------- */
+  function initMenu() {
+    var toggle = qs(".nav-toggle"), links = qs(".nav-links");
+    if (!toggle || !links) return;
+    toggle.addEventListener("click", function () {
+      var open = links.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    links.addEventListener("click", function (e) {
+      if (e.target.tagName === "A") { links.classList.remove("open"); toggle.setAttribute("aria-expanded", "false"); }
+    });
+  }
+
+  /* ---- Header/patička (sociální sítě, e-mail, rok) ------------------- */
   function initChrome(D) {
     document.querySelectorAll("[data-social]").forEach(function (n) { n.innerHTML = socialList(D); });
     document.querySelectorAll("[data-email]").forEach(function (n) {
       n.innerHTML = '<a href="mailto:' + esc(D.site.email) + '">' + esc(D.site.email) + "</a>";
     });
     document.querySelectorAll("[data-year]").forEach(function (n) { n.textContent = new Date().getFullYear(); });
-    var toggle = qs(".nav-toggle"), links = qs(".nav-links");
-    if (toggle && links) {
-      toggle.addEventListener("click", function () {
-        var open = links.classList.toggle("open");
-        toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      });
-      links.addEventListener("click", function (e) {
-        if (e.target.tagName === "A") { links.classList.remove("open"); toggle.setAttribute("aria-expanded", "false"); }
-      });
-    }
   }
 
   /* ---- SEO: meta + JSON-LD ------------------------------------------- */
@@ -247,8 +250,8 @@
         "<p>" + esc(ev.description || "") + "</p>" +
         '<div class="share"><span>Sdílet</span>' +
           '<a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '">Facebook</a>' +
-          '<a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(ev.title) + "&url=" + encodeURIComponent(url) + '">X</a>' +
-          '<a target="_blank" rel="noopener" href="https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(url) + '">LinkedIn</a></div>' +
+          (D.social && D.social.instagram ? '<a target="_blank" rel="noopener" href="' + esc(D.social.instagram) + '">Instagram</a>' : "") +
+          '<button type="button" class="share-copy" data-copy="' + esc(url) + '">Kopírovat odkaz</button></div>' +
       "</div>" +
       '<aside class="info-box"><dl>' +
         "<dt>Datum a čas</dt><dd>" + esc(dateTimeRange(ev.start, ev.end)) + "</dd>" +
@@ -257,6 +260,13 @@
         (mapQ ? '<a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=' + mapQ + '">Zobrazit na mapě</a>' : "") +
         (ev.ticketUrl ? '<a class="btn" target="_blank" rel="noopener" href="' + esc(ev.ticketUrl) + '">Vstupenky</a>' : "") +
       "</aside></div>";
+    var copyBtn = qs(".share-copy", host);
+    if (copyBtn) copyBtn.addEventListener("click", function () {
+      var link = copyBtn.getAttribute("data-copy");
+      var done = function () { var t = copyBtn.textContent; copyBtn.textContent = "Odkaz zkopírován ✓"; setTimeout(function () { copyBtn.textContent = t; }, 2000); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(done, done);
+      else { try { var ta = document.createElement("textarea"); ta.value = link; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); done(); } catch (e) {} }
+    });
     setMeta(D, { title: ev.title + " – " + D.site.fullName, description: ev.description || ev.title, url: url, image: abs(D, ev.poster) || abs(D, "assets/logo.png") });
     jsonLd({ "@context": "https://schema.org", "@graph": [eventLd(D, ev)] });
   }
@@ -322,6 +332,7 @@
     console.error("data.json se nepodařilo načíst:", err);
   }
   function start() {
+    initMenu();  // menu funguje i kdyby se data nenačetla
     fetch("data.json", { cache: "no-cache" })
       .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
       .then(boot).catch(fail);

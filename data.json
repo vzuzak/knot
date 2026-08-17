@@ -106,9 +106,8 @@
     "heading": "Drž se, SlipKnoT konečně zahraje na tvojí akci!",
     "intro": "Napiš na slipknottributecz@gmail.com a poladíme pár detailů!",
     "requirements": [
-      { "title": "Dost místa", "text": "Je nás jako psů, takže potřebujeme spoustu místa. Raiser pro bubeníka musí být min. 2×3 m a k tomu prostor pro dva perkusionisty, dva kytaristy, baskytaristu a frontmana." },
-      { "title": "Hloubka podia", "text": "Aby show dobře vypadala, potřebujeme i dostatečnou hloubku podia pro umístění banerů a bekdropu." },
-      { "title": "Prostor na přípravu", "text": "Potřebujeme prostor na přípravu. Tak jako originál SlipKnoT i my máme masky a kostýmy, takže se neobejdeme bez zázemí na převlečení." }
+      { "title": "Podium a prostor", "text": "Na bubny potřebujeme raiser 2×3 m a celé podium minimálně 5,5×4,5 m. Výška stěny za podiem je ideální 4 m – pokud to nejde, operativně se domluvíme, ale minimální plochu podia je nutné dodržet." },
+      { "title": "Prostor na přípravu", "text": "Tak jako originál SlipKnoT i my máme masky a kostýmy, takže se neobejdeme bez zázemí na převlečení." }
     ],
     "epkHeading": "Electronic Press Kit",
     "epkIntro": "Vše, co potřebuješ k naplánování naší show, na jednom místě – ke stažení:",
