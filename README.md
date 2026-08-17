@@ -4,6 +4,10 @@ Věrná kopie webu [slipknot1.cz](https://www.slipknot1.cz/). Čisté HTML + CSS
 bez frameworku a bez backendu. Obsah se **načítá za běhu z jednoho souboru `data.json`**
 (fetch při zobrazení stránky), takže přidání akce = úprava jediného souboru.
 
+> 🎸 **Jste z kapely a chcete jen přidat akci / novinku nebo vyměnit fotku člena?**
+> Otevřete jednoduchý návod **[SPRAVA.md](SPRAVA.md)** – vše se dá udělat přímo na github.com,
+> bez instalace čehokoli.
+
 ## Jak to funguje
 
 Když se stránka zobrazí, JavaScript si stáhne `data.json` a vykreslí z něj akce, novinky
