@@ -36,7 +36,7 @@ h1, h2, h3 { font-family: var(--font-head); font-weight: 500; margin: 0; line-he
 
 .container { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
 
-.section { padding: 64px 0; }
+.section { padding: 64px 0; scroll-margin-top: 68px; }  /* odsazení kvůli ukotvené horní liště */
 .section-head { text-align: center; margin-bottom: 40px; }
 .section-head h2 {
   font-size: clamp(34px, 6vw, 56px); letter-spacing: -0.02em; color: var(--text);
