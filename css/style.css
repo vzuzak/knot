@@ -66,7 +66,7 @@ h1, h2, h3 { font-family: var(--font-head); font-weight: 500; margin: 0; line-he
 .nav-social a:hover { opacity: 1; color: var(--accent); }
 .nav-social svg { width: 20px; height: 20px; }
 
-.nav-toggle { display: none; background: none; border: 0; color: var(--text); cursor: pointer; padding: 8px; }
+.nav-toggle { display: none; background: none; border: 0; color: var(--text); cursor: pointer; padding: 10px; line-height: 0; -webkit-tap-highlight-color: rgba(226,29,43,.3); touch-action: manipulation; }
 .nav-toggle svg { width: 30px; height: 30px; }
 
 /* ---- Hero (tmavý, agresivní – vtáhne fanouška) ---------------------- */
@@ -218,7 +218,9 @@ h1, h2, h3 { font-family: var(--font-head); font-weight: 500; margin: 0; line-he
     max-height: 0; overflow: hidden; transition: max-height .25s ease;
   }
   .nav-links.open { max-height: 440px; }
-  .nav-links a { padding: 15px 24px; border-bottom: 1px solid var(--line); }
+  .nav-links li { display: block; width: 100%; }
+  .nav-links a { display: block; width: 100%; padding: 17px 24px; font-size: 21px; border-bottom: 1px solid var(--line); -webkit-tap-highlight-color: rgba(226,29,43,.25); }
+  .nav-links a:active { background: rgba(226,29,43,.18); }
   .nav-links a.active { border-bottom-color: var(--line); border-left: 3px solid var(--accent); }
   .news-grid { grid-template-columns: 1fr 1fr; }
   .members { grid-template-columns: repeat(3, 1fr); gap: 26px 18px; }
