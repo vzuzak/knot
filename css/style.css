@@ -69,14 +69,42 @@ h1, h2, h3 { font-family: var(--font-head); font-weight: 500; margin: 0; line-he
 .nav-toggle { display: none; background: none; border: 0; color: var(--text); cursor: pointer; padding: 8px; }
 .nav-toggle svg { width: 30px; height: 30px; }
 
-/* ---- Hero (bílá sekce s černým logem – jako originál) ---------------- */
-.hero { text-align: center; padding: clamp(48px, 8vw, 90px) 0 clamp(40px, 6vw, 70px); background: #fff; color: #000; }
-.hero img.logo { width: min(882px, 92vw); height: auto; margin: 0 auto; }
+/* ---- Hero (tmavý, agresivní – vtáhne fanouška) ---------------------- */
+.hero { position: relative; overflow: hidden; text-align: center; background: #000; color: #fff;
+  padding: clamp(52px, 9vw, 116px) 0 clamp(40px, 6vw, 70px); }
+.hero-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(1100px 520px at 50% -10%, rgba(226,29,43,.32), transparent 62%),
+    radial-gradient(760px 420px at 50% 118%, rgba(226,29,43,.14), transparent 60%),
+    repeating-linear-gradient(115deg, rgba(255,255,255,.03) 0 1px, transparent 1px 7px),
+    #000; }
+.hero-bg::after { content: ""; position: absolute; inset: 0;
+  background: radial-gradient(125% 120% at 50% 42%, transparent 52%, rgba(0,0,0,.9) 100%); }
+.hero-inner { position: relative; z-index: 1; }
+.hero img.logo { width: min(800px, 90vw); height: auto; margin: 0 auto;
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,.6)) drop-shadow(0 0 22px rgba(226,29,43,.28)); }
 .hero .tagline {
-  font-family: var(--font-head); font-weight: 500; color: #000;
-  font-size: clamp(26px, 5.2vw, 52px); line-height: 1.25; margin-top: 26px;
-}
-.hero .tagline span { color: inherit; }
+  font-family: var(--font-head); font-weight: 500; color: #fff;
+  font-size: clamp(24px, 5vw, 50px); line-height: 1.2; margin-top: 22px;
+  text-shadow: 0 2px 22px rgba(0,0,0,.7); }
+.hero .tagline span { color: var(--accent); }
+.hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+.hero-actions .btn { margin-top: 0; }
+.hero-social { display: flex; gap: 20px; justify-content: center; margin-top: 26px; }
+.hero-social a { color: #fff; opacity: .85; transition: transform .15s, color .15s, opacity .15s; }
+.hero-social a:hover { color: var(--accent); opacity: 1; transform: translateY(-2px); }
+.hero-social svg { width: 30px; height: 30px; }
+.hero-next { margin-top: 36px; display: flex; justify-content: center; }
+.hero-next-card {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 16px;
+  background: rgba(0,0,0,.5); border: 1px solid rgba(226,29,43,.55); border-left: 4px solid var(--accent);
+  border-radius: 4px; padding: 12px 22px; color: #fff; backdrop-filter: blur(4px); max-width: 92vw; }
+.hero-next-card:hover { border-color: var(--accent); background: rgba(226,29,43,.14); }
+.hn-label { font-family: var(--font-head); text-transform: uppercase; letter-spacing: .08em; font-size: 12px; color: var(--accent); }
+.hn-date { font-family: var(--font-body); font-weight: 800; font-size: 16px; }
+.hn-title { font-family: var(--font-body); font-weight: 700; font-size: 16px; }
+.hn-where { color: var(--muted); font-size: 15px; }
+.hn-go { font-family: var(--font-head); text-transform: uppercase; letter-spacing: .05em; font-size: 13px; color: #fff; }
 
 /* ---- Akce (jednoduchý seznam, bílé na černé) ------------------------- */
 .events-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
@@ -160,10 +188,16 @@ h1, h2, h3 { font-family: var(--font-head); font-weight: 500; margin: 0; line-he
 .info-box dt { font-family: var(--font-head); font-weight: 500; color: var(--muted); font-size: 14px; margin-top: 16px; text-transform: uppercase; letter-spacing: .04em; }
 .info-box dt:first-child { margin-top: 0; }
 .info-box dd { margin: 3px 0 0; font-size: 18px; }
-.btn { display: inline-block; font-family: var(--font-body); font-weight: 600; background: var(--text); color: #000; padding: 12px 22px; border-radius: 2px; margin-top: 18px; }
-.btn:hover { background: var(--accent); color: #fff; }
+.btn { display: inline-block; font-family: var(--font-body); font-weight: 700; background: var(--accent); color: #fff; padding: 12px 22px; border-radius: 2px; margin-top: 18px; letter-spacing: .01em; }
+.btn:hover { background: #ff2a38; color: #fff; }
 .btn.ghost { background: none; border: 1px solid #555; color: var(--text); }
-.btn.ghost:hover { border-color: var(--text); }
+.btn.ghost:hover { border-color: var(--text); background: none; }
+.btn-lg { font-size: 20px; padding: 14px 30px; }
+.btn.dl { display: inline-flex; align-items: center; gap: 10px; }
+.dl-ic { width: 20px; height: 20px; }
+.epk { margin-top: 8px; }
+.epk-heading { font-family: var(--font-head); font-weight: 500; font-size: clamp(24px, 4vw, 34px); margin: 30px 0 6px; }
+.epk-intro { color: var(--muted); margin: 0 0 18px; }
 .share { margin-top: 28px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .share span { color: var(--muted); font-size: 14px; text-transform: uppercase; letter-spacing: .05em; }
 .share a { border: 1px solid #555; border-radius: 2px; padding: 8px 14px; font-size: 15px; }

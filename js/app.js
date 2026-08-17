@@ -193,6 +193,24 @@
       }).join("");
     }
 
+    var nextWrap = qs("[data-next-event]");
+    if (nextWrap) {
+      var next = splitEvents(D).up[0];
+      if (next) {
+        var ns = parseDate(next.start);
+        var where = next.venue ? esc(next.venue) + (next.city ? ", " + esc(next.city) : "") : esc(next.city || next.address || "");
+        nextWrap.innerHTML =
+          '<a class="hero-next-card" href="event.html?id=' + encodeURIComponent(next.id) + '">' +
+          '<span class="hn-label">Nejbližší akce</span>' +
+          '<span class="hn-date">' + (ns ? esc(shortDate(ns)) + " " + ns.getFullYear() : "") + "</span>" +
+          '<span class="hn-title">' + esc(next.title) + "</span>" +
+          (where ? '<span class="hn-where">' + where + "</span>" : "") +
+          '<span class="hn-go">Podrobnosti →</span></a>';
+      } else {
+        nextWrap.innerHTML = "";
+      }
+    }
+
     var aWrap = qs("[data-about]");
     if (aWrap && D.about) aWrap.innerHTML = D.about.paragraphs.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
 
@@ -269,16 +287,20 @@
     var host = qs("[data-organizer]"); if (!host || !D.organizer) return;
     var o = D.organizer;
     var docs = (o.documents || []).filter(function (d) { return d.url; });
+    var dl = '<svg class="dl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>';
     host.innerHTML =
       '<h1 class="detail-title">' + esc(o.heading) + "</h1>" +
       '<p class="about-lead">' + esc(o.intro) + "</p>" +
       '<div class="req-grid">' + o.requirements.map(function (r) {
         return '<div class="req"><h3>' + esc(r.title) + "</h3><p>" + esc(r.text) + "</p></div>";
       }).join("") + "</div>" +
-      (docs.length ? '<div class="docs">' + docs.map(function (d) {
-        return '<a class="btn" href="' + esc(d.url) + '" target="_blank" rel="noopener">' + esc(d.label) + "</a>";
-      }).join("") + "</div>" : "") +
-      '<p style="margin-top:28px"><a class="btn" href="mailto:' + esc(D.site.email) + '">Napiš nám</a></p>';
+      (docs.length ? '<section class="epk">' +
+        (o.epkHeading ? '<h2 class="epk-heading">' + esc(o.epkHeading) + "</h2>" : "") +
+        (o.epkIntro ? '<p class="epk-intro">' + esc(o.epkIntro) + "</p>" : "") +
+        '<div class="docs">' + docs.map(function (d) {
+          return '<a class="btn dl" href="' + esc(d.url) + '" download>' + dl + esc(d.label) + "</a>";
+        }).join("") + "</div></section>" : "") +
+      '<p style="margin-top:32px"><a class="btn ghost" href="mailto:' + esc(D.site.email) + '">Napiš nám</a></p>';
     setMeta(D, { title: "Pro pořadatele – " + D.site.fullName,
       description: "Chceš Slipknot tribute Eyeless na svojí akci? Technické požadavky, rider, playlist a kontakt.",
       url: D.site.baseUrl + "/pro-poradatele.html", image: abs(D, "assets/logo.png") });

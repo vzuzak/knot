@@ -110,10 +110,12 @@
       { "title": "Hloubka podia", "text": "Aby show dobře vypadala, potřebujeme i dostatečnou hloubku podia pro umístění banerů a bekdropu." },
       { "title": "Prostor na přípravu", "text": "Potřebujeme prostor na přípravu. Tak jako originál SlipKnoT i my máme masky a kostýmy, takže se neobejdeme bez zázemí na převlečení." }
     ],
+    "epkHeading": "Electronic Press Kit",
+    "epkIntro": "Vše, co potřebuješ k naplánování naší show, na jednom místě – ke stažení:",
     "documents": [
-      { "label": "RIDER", "url": "" },
-      { "label": "PLAYLIST", "url": "" },
-      { "label": "STAGE PLAN", "url": "" }
+      { "label": "Stage plán", "url": "assets/epk/eyeless-stage-plan.pdf" },
+      { "label": "Rider", "url": "assets/epk/eyeless-rider.pdf" },
+      { "label": "Playlist", "url": "assets/epk/eyeless-playlist.pdf" }
     ]
   }
 }

@@ -55,7 +55,18 @@ Ulož, nahraj `data.json` na web — a je to. Akce se objeví v seznamu i její 
 
 **Novinku** přidáš stejně v sekci `"news"` (obrázek dej do `assets/news/`).
 **Fotku člena / kontakt / sítě** změníš v sekcích `"members"`, `"site"`, `"social"`.
-**Rider / Playlist / Stage plan**: nahraj PDF (např. do `assets/`) a doplň `url` v `organizer.documents`.
+
+### Electronic Press Kit (pro pořadatele)
+
+Soubory ke stažení jsou v **`assets/epk/`**:
+
+- `eyeless-stage-plan.pdf`
+- `eyeless-rider.pdf`
+- `eyeless-playlist.pdf`
+
+Teď jsou to **zástupné (placeholder) PDF** – nahraď je skutečnými dokumenty a **ponech stejné
+názvy** (pak nemusíš nic dalšího měnit). Chceš jiné názvy nebo další dokument? Uprav sekci
+`organizer.documents` v `data.json` (`label` = text tlačítka, `url` = cesta k souboru).
 
 ## Náhled během vývoje
 
