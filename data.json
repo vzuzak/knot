@@ -16,6 +16,18 @@
   },
   "events": [
     {
+      "id": "eyeless-praha-klub-roxy",
+      "title": "Korn SK a Eyeless v Klubu Roxy!",
+      "start": "2027-05-16T20:00:00+02:00",
+      "end":   "2027-05-16T23:30:00+02:00",
+      "venue": "Klub Roxy",
+      "address": "Prostřední 123, 100 00 Praha",
+      "city": "Praha",
+      "description": "Maximální agrese 16. května v Roxy! – SlipKnoT a KoRn v podání Eyeless a KoRn SK!",
+      "poster": "",
+      "ticketUrl": ""
+    },
+    {
       "id": "korn-sk-a-eyeless-na-melodce",
       "title": "KoRn-SK a Eyeless na Melodce",
       "start": "2027-02-06T20:00:00+01:00",
