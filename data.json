@@ -16,6 +16,18 @@
   },
   "events": [
     {
+      "id": "eyeless-pridoli-kulturni-dum",
+      "title": "Eyeless v DPřídolí!",
+      "start": "2027-05-15T20:00:00+02:00",
+      "end":   "2027-05-15T23:30:00+02:00",
+      "venue": "Kulturní dům DPřídolí",
+      "address": "Přídolí 1, 381 01 Přídolí",
+      "city": "Přídolí",
+      "description": "Maximální agrese 15. května v RPřídolí! – SlipKnoT v podání Eyeles!",
+      "poster": "assets/news/tynecky-mazec.jpg",
+      "ticketUrl": ""
+    },
+    {
       "id": "eyeless-pasinka-klub-roxy",
       "title": "Korn SK a Eyeless v Klubu Roxy!",
       "start": "2027-05-16T20:00:00+02:00",
@@ -36,7 +48,7 @@
       "address": "Pisárecká 525/7a, 603 00 Brno-střed-Pisárky",
       "city": "Brno",
       "description": "Maximální agrese 6. února na Melodce – SlipKnoT a KoRn v podání Eyeless a KoRn SK!",
-      "poster": "",
+      "poster": "assets/news/Brno melodka.png",
       "ticketUrl": ""
     },
     {
@@ -48,7 +60,7 @@
       "address": "Skuherského 1392/75, 370 10 České Budějovice",
       "city": "České Budějovice",
       "description": "Čistá metalová psychóza 6. 3. v Budějicích.",
-      "poster": "",
+      "poster": "assets/news/ČB lucerna.png",
       "ticketUrl": ""
     }
   ],
