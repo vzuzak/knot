@@ -65,6 +65,20 @@
     }
   ],
   "news": [
+{
+      "id": "zkouska-novinky",
+      "title": "Slipknot má tribute v ČR!",
+      "date": "2026-08-18",
+      "author": "spudiljosef",
+      "image": "assets/news/Slipknot_-_Slipknot2.jpg",
+      "excerpt": "Už i v naší kotlině se našla pekelná devítka!",
+      "body": [
+        "I do čech už konečně dorazila energine z Iowy a parta hudebníků se rozhodla vybudovat si jméno jako Slipknot tribute.",
+        "První "zkušební" koncert mají za sebou a nyní to rozbalí naplno! Doražte na Melodku nebo do Českobudějovické Lucerny!"
+      ],
+      "views": 0,
+      "likes": 0
+    },
     {
       "id": "prvni-show-na-tyneckym-mazci",
       "title": "První show na Týneckým Mazci",
