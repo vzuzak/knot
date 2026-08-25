@@ -147,8 +147,28 @@ h1, h2, h3 { font-family: var(--font-head); font-weight: 500; margin: 0; line-he
 .news-card h3 { font-family: var(--font-head); font-weight: 500; font-size: 22px; }
 .news-card h3 a:hover { color: var(--accent); }
 .news-card p { margin: 0; color: var(--muted); font-size: 16px; flex: 1; }
-.news-card .foot { display: flex; gap: 14px; color: #9a9a9a; font-size: 14px; align-items: center; margin-top: 4px; }
-.news-card .foot .likes { color: var(--muted); }
+.news-card .foot { display: flex; gap: 8px 14px; color: #9a9a9a; font-size: 14px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
+.news-card .foot .author { margin-right: auto; }
+
+/* srdíčko / lajk */
+.like-btn { background: none; border: 0; cursor: pointer; color: var(--muted); font-family: var(--font-body); font-size: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 2px 4px; -webkit-tap-highlight-color: rgba(226,29,43,.25); }
+.like-btn .hrt { color: #555; font-size: 17px; line-height: 1; transition: transform .15s, color .15s; }
+.like-btn:hover .hrt { color: var(--accent); }
+.like-btn.liked { color: var(--text); cursor: default; }
+.like-btn.liked .hrt { color: var(--accent); }
+.like-btn:active .hrt { transform: scale(1.35); }
+
+/* prokliknutelný nadpis sekce + odkaz na celou stránku */
+.section-head .section-link { display: inline-block; color: inherit; }
+.section-head .section-link h2 { transition: color .15s; }
+.section-head .section-link:hover h2 { color: var(--accent); }
+.section-head .section-link h2::after { content: " ›"; color: var(--accent); }
+.section-more { text-align: center; margin-top: 30px; }
+.page-lead { color: var(--muted); margin: -4px 0 28px; }
+
+/* patička detailu novinky */
+.post-foot { display: flex; align-items: center; gap: 22px; margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; flex-wrap: wrap; }
+.post-foot .like-btn { font-size: 16px; }
 
 /* ---- Kdo jsme + členové ---------------------------------------------- */
 .about-lead {

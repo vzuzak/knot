@@ -6,7 +6,15 @@
     "email": "slipknottributecz@gmail.com",
     "baseUrl": "https://vzuzak.github.io/knot",
     "description": "Eyeless – první Slipknot tribute kapela v České republice. Devítičlenná monstrózní sestava zkušených muzikantů, masky, agrese a naživo odehraný Slipknot.",
-    "genre": ["Nu metal", "Metal", "Tribute"]
+    "genre": [
+      "Nu metal",
+      "Metal",
+      "Tribute"
+    ],
+    "counter": {
+      "base": "https://abacus.jasoncameron.dev",
+      "namespace": "eyeless-slipknot-cz"
+    }
   },
   "social": {
     "instagram": "https://www.instagram.com/eyeless_slipknot_cz",
@@ -19,25 +27,25 @@
       "id": "eyeless-pridoli-kulturni-dum",
       "title": "Eyeless v DPřídolí!",
       "start": "2027-05-15T20:00:00+02:00",
-      "end":   "2027-05-15T23:30:00+02:00",
+      "end": "2027-05-15T23:30:00+02:00",
       "venue": "Kulturní dům DPřídolí",
       "address": "Přídolí 1, 381 01 Přídolí",
       "city": "Přídolí",
       "description": "Maximální agrese 15. května v RPřídolí! – SlipKnoT v podání Eyeles!",
-      "poster": "assets/news/tynecky-mazec.jpg",
-      "ticketUrl": ""
+      "ticketUrl": "",
+      "image": "assets/news/tynecky-mazec.webp"
     },
     {
       "id": "eyeless-pasinka-klub-roxy",
       "title": "Korn SK a Eyeless v Klubu Roxy!",
       "start": "2027-05-16T20:00:00+02:00",
-      "end":   "2027-05-16T23:30:00+02:00",
+      "end": "2027-05-16T23:30:00+02:00",
       "venue": "Klub Roxy",
       "address": "Pašinka 137, 280 02 Kolín",
       "city": "Pašinka",
       "description": "Maximální agrese 16. května v Roxy! – SlipKnoT a KoRn v podání Eyeless a KoRn SK!",
-      "poster": "",
-      "ticketUrl": ""
+      "ticketUrl": "",
+      "image": ""
     },
     {
       "id": "korn-sk-a-eyeless-na-melodce",
@@ -48,8 +56,8 @@
       "address": "Pisárecká 525/7a, 603 00 Brno-střed-Pisárky",
       "city": "Brno",
       "description": "Maximální agrese 6. února na Melodce – SlipKnoT a KoRn v podání Eyeless a KoRn SK!",
-      "poster": "assets/news/Brno melodka.png",
-      "ticketUrl": ""
+      "ticketUrl": "",
+      "image": "assets/news/brno-melodka.webp"
     },
     {
       "id": "ceske-budejovice-eyeless-pantera-czech-tribute",
@@ -60,17 +68,17 @@
       "address": "Skuherského 1392/75, 370 10 České Budějovice",
       "city": "České Budějovice",
       "description": "Čistá metalová psychóza 6. 3. v Budějicích.",
-      "poster": "assets/news/ČB lucerna.png",
-      "ticketUrl": ""
+      "ticketUrl": "",
+      "image": "assets/news/cb-lucerna.webp"
     }
   ],
   "news": [
-{
+    {
       "id": "zkouska-novinky",
       "title": "Slipknot má tribute v ČR!",
       "date": "2026-08-18",
       "author": "spudiljosef",
-      "image": "assets/news/Slipknot_-_Slipknot2.jpg",
+      "image": "assets/news/slipknot-tribute.webp",
       "excerpt": "Už i v naší kotlině se našla pekelná devítka!",
       "body": [
         "I do čech už konečně dorazila energine z Iowy a parta hudebníků se rozhodla vybudovat si jméno jako Slipknot tribute.",
@@ -84,42 +92,42 @@
       "title": "První show na Týneckým Mazci",
       "date": "2025-07-01",
       "author": "spudiljosef",
-      "image": "assets/news/tynecky-mazec.jpg",
+      "image": "assets/news/tynecky-mazec.webp",
       "excerpt": "Naše first ever show bude na festivalu Týnecký Mazec, který letos slaví 20 let. Doražte včas, vykopáváme brány pekel!",
       "body": [
         "Naše first ever show bude na festivalu Týnecký Mazec, který letos slaví 20 let.",
         "Doražte včas – vykopáváme brány pekel a rozjedeme naši první masku naživo."
       ],
-      "views": 11,
-      "likes": 2
+      "views": 0,
+      "likes": 0
     },
     {
       "id": "bud-7",
       "title": "Buď #7",
       "date": "2025-06-01",
       "author": "spudiljosef",
-      "image": "assets/news/bud-7.jpg",
+      "image": "assets/news/bud-7.webp",
       "excerpt": "Po zdařilém hledání frontmana teď hledáme kytaristu na post #7 Micka! Kdo má zájem a dost zkušeností, ozvi se.",
       "body": [
         "Po zdařilém hledání frontmana teď hledáme kytaristu na post #7 Micka!",
         "Kdo má zájem, dost zkušeností a chuť hrát Slipknot naživo – napiš nám na slipknottributecz@gmail.com."
       ],
-      "views": 25,
-      "likes": 2
+      "views": 0,
+      "likes": 0
     },
     {
       "id": "hleda-se-8-corey",
       "title": "Hledá se #8 Corey",
       "date": "2025-05-01",
       "author": "spudiljosef",
-      "image": "assets/news/hleda-se-8-corey.jpg",
+      "image": "assets/news/hleda-se-8-corey.webp",
       "excerpt": "Do naší monstrózní skupiny hledáme řvouna, zpěváka, growlera a screamera v jedné osobě.",
       "body": [
         "Do naší monstrózní skupiny hledáme řvouna, zpěváka, growlera a screamera v jedné osobě.",
         "Pokud jsi to ty, ozvi se na slipknottributecz@gmail.com."
       ],
-      "views": 61,
-      "likes": 3
+      "views": 0,
+      "likes": 0
     }
   ],
   "about": {
@@ -130,29 +138,89 @@
     ]
   },
   "members": [
-    { "num": "0", "name": "Alexandra Mann", "nick": "Sid Vilson", "img": "assets/members/0-alexandra-mann.jpg" },
-    { "num": "1", "name": "Josef Spudil", "nick": "Joey", "img": "assets/members/1-josef-spudil.jpg" },
-    { "num": "2", "name": "Jiří Mašín", "nick": "Paul", "img": "assets/members/2-jiri-masin.jpg" },
-    { "num": "3", "name": "Martin Slavík", "nick": "Chris", "img": "assets/members/3-martin-slavik.jpg" },
-    { "num": "4", "name": "Dušan Faško", "nick": "Jim", "img": "assets/members/4-dusan-fasko.jpg" },
-    { "num": "5", "name": "Jakub Halm", "nick": "Craig", "img": "assets/members/5-jakub-halm.jpg" },
-    { "num": "6", "name": "Ondřej Mašín", "nick": "Shawn", "img": "assets/members/6-ondrej-masin.jpg" },
-    { "num": "7", "name": "Maroš Jurina", "nick": "Mick", "img": "assets/members/7-maros-jurina.jpg" },
-    { "num": "8", "name": "Vojtěch Vlasák", "nick": "Corey", "img": "assets/members/8-vojtech-vlasak.png" }
+    {
+      "num": "0",
+      "name": "Alexandra Mann",
+      "nick": "Sid Vilson",
+      "img": "assets/members/0-alexandra-mann.webp"
+    },
+    {
+      "num": "1",
+      "name": "Josef Spudil",
+      "nick": "Joey",
+      "img": "assets/members/1-josef-spudil.webp"
+    },
+    {
+      "num": "2",
+      "name": "Jiří Mašín",
+      "nick": "Paul",
+      "img": "assets/members/2-jiri-masin.webp"
+    },
+    {
+      "num": "3",
+      "name": "Martin Slavík",
+      "nick": "Chris",
+      "img": "assets/members/3-martin-slavik.webp"
+    },
+    {
+      "num": "4",
+      "name": "Dušan Faško",
+      "nick": "Jim",
+      "img": "assets/members/4-dusan-fasko.webp"
+    },
+    {
+      "num": "5",
+      "name": "Jakub Halm",
+      "nick": "Craig",
+      "img": "assets/members/5-jakub-halm.webp"
+    },
+    {
+      "num": "6",
+      "name": "Ondřej Mašín",
+      "nick": "Shawn",
+      "img": "assets/members/6-ondrej-masin.webp"
+    },
+    {
+      "num": "7",
+      "name": "Maroš Jurina",
+      "nick": "Mick",
+      "img": "assets/members/7-maros-jurina.webp"
+    },
+    {
+      "num": "8",
+      "name": "Vojtěch Vlasák",
+      "nick": "Corey",
+      "img": "assets/members/8-vojtech-vlasak.webp"
+    }
   ],
   "organizer": {
     "heading": "Drž se, SlipKnoT konečně zahraje na tvojí akci!",
     "intro": "Napiš na slipknottributecz@gmail.com a poladíme pár detailů!",
     "requirements": [
-      { "title": "Podium a prostor", "text": "Na bubny potřebujeme raiser 2×3 m a celé podium minimálně 5,5×4,5 m. Výška stěny za podiem je ideální 4 m – pokud to nejde, operativně se domluvíme, ale minimální plochu podia je nutné dodržet." },
-      { "title": "Prostor na přípravu", "text": "Tak jako originál SlipKnoT i my máme masky a kostýmy, takže se neobejdeme bez zázemí na převlečení." }
+      {
+        "title": "Podium a prostor",
+        "text": "Na bubny potřebujeme raiser 2×3 m a celé podium minimálně 5,5×4,5 m. Výška stěny za podiem je ideální 4 m – pokud to nejde, operativně se domluvíme, ale minimální plochu podia je nutné dodržet."
+      },
+      {
+        "title": "Prostor na přípravu",
+        "text": "Tak jako originál SlipKnoT i my máme masky a kostýmy, takže se neobejdeme bez zázemí na převlečení."
+      }
     ],
     "epkHeading": "Electronic Press Kit",
     "epkIntro": "Vše, co potřebuješ k naplánování naší show, na jednom místě – ke stažení:",
     "documents": [
-      { "label": "Stage plán", "url": "assets/epk/eyeless-stage-plan.pdf" },
-      { "label": "Rider", "url": "assets/epk/eyeless-rider.pdf" },
-      { "label": "Playlist", "url": "assets/epk/Playlist.pdf" }
+      {
+        "label": "Stage plán",
+        "url": "assets/epk/eyeless-stage-plan.pdf"
+      },
+      {
+        "label": "Rider",
+        "url": "assets/epk/eyeless-rider.pdf"
+      },
+      {
+        "label": "Playlist",
+        "url": "assets/epk/eyeless-playlist.pdf"
+      }
     ]
   }
 }

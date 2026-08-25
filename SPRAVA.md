@@ -35,7 +35,7 @@ a jen změň hodnoty:
       "address": "Nějaká 123, 100 00 Praha",
       "city": "Praha",
       "description": "Krátký popis koncertu.",
-      "poster": "",
+      "image": "",
       "ticketUrl": ""
     },
 ```
@@ -43,12 +43,15 @@ a jen změň hodnoty:
 - **`id`** = krátký název bez mezer a bez háčků/čárek (použije se v odkazu), musí být jiný než u ostatních akcí.
 - **`start` / `end`** = datum a čas ve tvaru `ROK-MĚSÍC-DENThodina:minuta:00+02:00`.
   V létě je na konci `+02:00`, v zimě `+01:00`.
-- **`venue`, `poster`, `ticketUrl`** můžou zůstat prázdné `""`.
+- **`image`** = plakát akce. Nahraj obrázek (viz níže) a dej sem cestu, např.
+  `"assets/news/muj-plakat.webp"`. Zobrazí se na **detailu akce** po rozkliknutí. Prázdné `""` = bez obrázku.
+- **`venue`, `ticketUrl`** můžou zůstat prázdné `""`.
   `ticketUrl` (odkaz na vstupenky) přidá na detailu akce tlačítko „Vstupenky".
 - ⚠️ Mezi bloky `{ … }` musí být **čárka**. Poslední blok před `]` čárku mít nemá.
 
-Odehrané koncerty **nemusíš mazat** – jakmile datum uplyne, samy se schovají do
-rozbalovacího „Zobrazit odehrané akce".
+Na hlavní stránce se ukazují **3 nejbližší** akce; kompletní seznam je na stránce
+**Akce** (proklik přes nadpis „Akce" nebo přes menu). Odehrané koncerty **nemusíš mazat** –
+jakmile datum uplyne, samy se schovají do rozbalovacího „Zobrazit odehrané akce".
 
 ### Přidat novinku
 
@@ -82,7 +85,12 @@ a pak vlož blok:
 2. **Přetáhni** obrázek do okna (nebo *choose your files*).
 3. Dole **Commit changes**.
 
-Doporučení: pojmenuj soubor bez mezer a háčků, např. `pepa-novy.jpg`, ať se dobře odkazuje.
+**Doporučení kvůli rychlosti webu** (velké fotky web zpomalují):
+- Pojmenuj soubor bez mezer a háčků, např. `pepa-novy.webp`.
+- Ideální formát je **WebP** nebo JPG (ne velké PNG fotky).
+- Rozumná velikost: šířka do ~1200 px a soubor pod ~250 kB. Fotku můžeš zmenšit
+  třeba na <https://squoosh.app> (vyber formát WebP, kvalita ~80) a stáhnout menší verzi.
+- Fotky členů stačí na výšku ~600 px.
 
 ---
 
@@ -91,7 +99,7 @@ Doporučení: pojmenuj soubor bez mezer a háčků, např. `pepa-novy.jpg`, ať 
 V `data.json` v části `"members": [` je pro každého člena jeden řádek:
 
 ```json
-    { "num": "1", "name": "Josef Spudil", "nick": "Joey", "img": "assets/members/1-josef-spudil.jpg" },
+    { "num": "1", "name": "Josef Spudil", "nick": "Joey", "img": "assets/members/1-josef-spudil.webp" },
 ```
 
 - **Změnit jméno / přezdívku:** přepiš `"name"` nebo `"nick"`.
@@ -111,3 +119,16 @@ V `data.json` v části `"members": [` je pro každého člena jeden řádek:
 - Kdyby web po úpravě hlásil, že se obsah nepodařilo načíst, je skoro jistě chyba čárka/uvozovka
   v `data.json`. Otevři **Commits** v repu a vrať poslední změnu (*Revert*), nebo chybu oprav.
 - Háčky a čárky v **textech** (název akce, popis, jména) jsou v pořádku – ty klidně používej.
+
+---
+
+## ❤️ Počítadlo zobrazení a lajky
+
+Funguje **automaticky**, nemusíš nic spravovat:
+- **Zobrazení** novinky se započítá pokaždé, když ji někdo otevře.
+- **Srdíčko** může návštěvník kliknout (jednou z jednoho zařízení) a na hlavní stránce
+  i v seznamu novinek se ukazuje, kolik lidí lajklo.
+
+Počítá to zdarma služba **Abacus** (nastavená v `data.json` v `site.counter`). Čísla `views`
+a `likes` u novinky v `data.json` jsou jen výchozí hodnota, než se načte živé počítadlo –
+klidně je nech na `0`.

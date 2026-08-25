@@ -1,14 +1,12 @@
 /* =============================================================================
    Slipknot Tribute CZ — dynamické vykreslení
-   Obsah se načítá ZA BĚHU z data.json (fetch při zobrazení stránky).
-   Přidání akce/novinky = uprav jen data.json. Nic se negeneruje.
-   Pozn.: fetch funguje po nahrání na web (http/https). Otevření souboru
-   dvojklikem (file://) prohlížeč z bezpečnostních důvodů blokuje.
+   Obsah se načítá za běhu z data.json. Počítadlo zobrazení a lajky přes
+   free službu Abacus (https://abacus.jasoncameron.dev), nastavená v data.json.
    ========================================================================== */
 (function () {
   "use strict";
 
-  /* ---- Pomocné funkce ------------------------------------------------ */
+  /* ---- Pomocné ------------------------------------------------------- */
   function esc(s) {
     return String(s == null ? "" : s)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
@@ -17,6 +15,7 @@
   function qs(sel, root) { return (root || document).querySelector(sel); }
   function getParam(name) { return new URLSearchParams(location.search).get(name); }
   function parseDate(s) { var d = new Date(s); return isNaN(d) ? null : d; }
+  function eventImage(ev) { return ev.image || ev.poster || ""; }
 
   var fmtDay  = new Intl.DateTimeFormat("cs-CZ", { day: "2-digit" });
   var fmtWday = new Intl.DateTimeFormat("cs-CZ", { weekday: "short" });
@@ -40,6 +39,20 @@
     return out;
   }
 
+  /* ---- Počítadlo (Abacus) ------------------------------------------- */
+  var CT = null;
+  function ctUrl(action, key) { return CT.base + "/" + action + "/" + encodeURIComponent(CT.namespace) + "/" + encodeURIComponent(key); }
+  function ctCall(action, key) {
+    if (!CT || !CT.base) return Promise.reject("no counter");
+    return fetch(ctUrl(action, key)).then(function (r) {
+      if (r.status === 404) return { value: 0 };            // klíč ještě neexistuje = 0
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then(function (j) { return j.value; });
+  }
+  function ctGet(key) { return ctCall("get", key); }
+  function ctHit(key) { return ctCall("hit", key); }
+
   /* ---- Ikony sociálních sítí ----------------------------------------- */
   var ICONS = {
     instagram: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.2.4-.3 1-.4 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.2 1 .3 2.1.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.2-.4.3-1 .4-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.4-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.2-1-.3-2.1-.4-1.2-.1-1.6-.1-4.7-.1zm0 3.1a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8zm0 8.1a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zm6.2-8.3a1.1 1.1 0 1 1-2.3 0 1.1 1.1 0 0 1 2.3 0z"/></svg>',
@@ -55,7 +68,7 @@
     }).join("");
   }
 
-  /* ---- Mobilní menu (nezávislé na načtení dat – funguje vždy) --------- */
+  /* ---- Mobilní menu (nezávislé na datech) ---------------------------- */
   function initMenu() {
     var toggle = qs(".nav-toggle"), links = qs(".nav-links");
     if (!toggle || !links) return;
@@ -68,7 +81,7 @@
     });
   }
 
-  /* ---- Header/patička (sociální sítě, e-mail, rok) ------------------- */
+  /* ---- Header/patička ------------------------------------------------ */
   function initChrome(D) {
     document.querySelectorAll("[data-social]").forEach(function (n) { n.innerHTML = socialList(D); });
     document.querySelectorAll("[data-email]").forEach(function (n) {
@@ -77,18 +90,13 @@
     document.querySelectorAll("[data-year]").forEach(function (n) { n.textContent = new Date().getFullYear(); });
   }
 
-  /* ---- SEO: meta + JSON-LD ------------------------------------------- */
+  /* ---- SEO ----------------------------------------------------------- */
   function setMeta(D, opts) {
     if (opts.title) document.title = opts.title;
     function meta(sel, val) {
       if (val == null) return;
       var el = qs(sel);
-      if (!el) {
-        el = document.createElement("meta");
-        var m = sel.match(/\[(name|property)="([^"]+)"\]/);
-        if (m) el.setAttribute(m[1], m[2]);
-        document.head.appendChild(el);
-      }
+      if (!el) { el = document.createElement("meta"); var m = sel.match(/\[(name|property)="([^"]+)"\]/); if (m) el.setAttribute(m[1], m[2]); document.head.appendChild(el); }
       el.setAttribute("content", val);
     }
     meta('meta[name="description"]', opts.description);
@@ -99,67 +107,88 @@
     meta('meta[name="twitter:title"]', opts.title);
     meta('meta[name="twitter:description"]', opts.description);
     meta('meta[name="twitter:image"]', opts.image);
-    if (opts.url) {
-      var link = qs('link[rel="canonical"]');
-      if (!link) { link = document.createElement("link"); link.rel = "canonical"; document.head.appendChild(link); }
-      link.href = opts.url;
-    }
+    if (opts.url) { var link = qs('link[rel="canonical"]'); if (!link) { link = document.createElement("link"); link.rel = "canonical"; document.head.appendChild(link); } link.href = opts.url; }
   }
-  function jsonLd(obj) {
-    var s = document.createElement("script");
-    s.type = "application/ld+json";
-    s.textContent = JSON.stringify(obj);
-    document.head.appendChild(s);
-  }
-  function abs(D, path) {
-    if (!path) return undefined;
-    return /^https?:/.test(path) ? path : D.site.baseUrl + "/" + String(path).replace(/^\//, "");
-  }
+  function jsonLd(obj) { var s = document.createElement("script"); s.type = "application/ld+json"; s.textContent = JSON.stringify(obj); document.head.appendChild(s); }
+  function abs(D, path) { if (!path) return undefined; return /^https?:/.test(path) ? path : D.site.baseUrl + "/" + String(path).replace(/^\//, ""); }
   function musicGroup(D) {
     var s = D.social || {};
-    return {
-      "@type": "MusicGroup", "name": D.site.name, "alternateName": D.site.fullName,
-      "url": D.site.baseUrl, "description": D.site.description, "genre": D.site.genre, "email": D.site.email,
-      "sameAs": ["instagram", "facebook", "youtube", "tiktok"].filter(function (k) { return s[k]; }).map(function (k) { return s[k]; })
-    };
+    return { "@type": "MusicGroup", "name": D.site.name, "alternateName": D.site.fullName, "url": D.site.baseUrl,
+      "description": D.site.description, "genre": D.site.genre, "email": D.site.email,
+      "sameAs": ["instagram", "facebook", "youtube", "tiktok"].filter(function (k) { return s[k]; }).map(function (k) { return s[k]; }) };
   }
   function eventLd(D, ev) {
-    var o = {
-      "@type": "MusicEvent", "name": ev.title, "startDate": ev.start, "endDate": ev.end || undefined,
-      "eventStatus": "https://schema.org/EventScheduled",
-      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    var o = { "@type": "MusicEvent", "name": ev.title, "startDate": ev.start, "endDate": ev.end || undefined,
+      "eventStatus": "https://schema.org/EventScheduled", "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
       "description": ev.description, "performer": musicGroup(D),
       "organizer": { "@type": "Organization", "name": D.site.fullName, "email": D.site.email },
       "location": { "@type": "Place", "name": ev.venue || ev.city || ev.address,
         "address": { "@type": "PostalAddress", "streetAddress": ev.address, "addressLocality": ev.city, "addressCountry": "CZ" } },
       "url": D.site.baseUrl + "/event.html?id=" + encodeURIComponent(ev.id),
-      "image": abs(D, ev.poster) || abs(D, "assets/logo.png")
-    };
+      "image": abs(D, eventImage(ev)) || abs(D, "assets/logo.png") };
     if (ev.ticketUrl) o.offers = { "@type": "Offer", "url": ev.ticketUrl, "availability": "https://schema.org/InStock" };
     return o;
   }
 
-  /* ---- Řazení akcí --------------------------------------------------- */
+  /* ---- Akce – bloky -------------------------------------------------- */
   function splitEvents(D) {
     var now = Date.now(), up = [], past = [];
-    (D.events || []).forEach(function (ev) {
-      var end = parseDate(ev.end || ev.start);
-      (end && end.getTime() < now ? past : up).push(ev);
-    });
+    (D.events || []).forEach(function (ev) { var end = parseDate(ev.end || ev.start); (end && end.getTime() < now ? past : up).push(ev); });
     up.sort(function (a, b) { return parseDate(a.start) - parseDate(b.start); });
     past.sort(function (a, b) { return parseDate(b.start) - parseDate(a.start); });
     return { up: up, past: past };
   }
   function eventCardHTML(ev, isPast) {
     var s = parseDate(ev.start);
-    var date = s
-      ? '<div class="event-date"><span class="dd">' + shortDate(s) + '</span><span class="yy">' + s.getFullYear() + "</span></div>"
-      : '<div class="event-date"></div>';
+    var date = s ? '<div class="event-date"><span class="dd">' + shortDate(s) + '</span><span class="yy">' + s.getFullYear() + "</span></div>" : '<div class="event-date"></div>';
     var venue = ev.venue ? "<b>" + esc(ev.venue) + "</b> / " : "";
     return '<li class="event-card' + (isPast ? " past" : "") + '">' + date +
       '<div class="event-main"><h3>' + esc(ev.title) + "</h3>" +
       '<div class="meta">' + venue + esc(ev.address || "") + "</div></div>" +
       '<a class="event-cta" href="event.html?id=' + encodeURIComponent(ev.id) + '">Podrobnosti</a></li>';
+  }
+  function eventsBlock(D, limit) {
+    var s = splitEvents(D), up = s.up, past = s.past;
+    if (!up.length && !past.length) return '<p class="events-empty">Momentálně nemáme naplánované žádné akce. Sledujte nás na sítích!</p>';
+    var shown = limit ? up.slice(0, limit) : up, html = "";
+    html += up.length ? '<ul class="events-list">' + shown.map(function (e) { return eventCardHTML(e, false); }).join("") + "</ul>"
+                      : '<p class="events-empty">Žádné nadcházející akce – ale brzo přidáme další!</p>';
+    if (!limit && past.length) {
+      html += '<details class="past-details"><summary class="past-toggle">Zobrazit odehrané akce (' + past.length + ")</summary>" +
+        '<ul class="events-list" style="margin-top:16px">' + past.map(function (e) { return eventCardHTML(e, true); }).join("") + "</ul></details>";
+    }
+    return html;
+  }
+
+  /* ---- Novinky – karty + počítadlo ----------------------------------- */
+  function newsCardHTML(p) {
+    return '<article class="news-card">' +
+      '<a class="thumb" href="post.html?id=' + encodeURIComponent(p.id) + '"><img src="' + esc(p.image) + '" alt="' + esc(p.title) + '" loading="lazy" decoding="async" width="400" height="300"></a>' +
+      '<div class="body"><h3><a href="post.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.title) + "</a></h3>" +
+      "<p>" + esc(p.excerpt) + "</p>" +
+      '<div class="foot"><span class="author">' + esc(p.author) + "</span>" +
+      '<span class="views" data-views-for="' + esc(p.id) + '">' + (p.views || 0) + " zobrazení</span>" +
+      '<button type="button" class="like-btn" data-like-for="' + esc(p.id) + '" aria-pressed="false" aria-label="To se mi líbí">' +
+      '<span class="hrt">♥</span> <span class="cnt">' + (p.likes || 0) + "</span></button>" +
+      "</div></div></article>";
+  }
+  function hydrateNews(root) {
+    root.querySelectorAll("[data-views-for]").forEach(function (el) {
+      var id = el.getAttribute("data-views-for");
+      ctGet("views-" + id).then(function (v) { if (v != null) el.textContent = v + " zobrazení"; }).catch(function () {});
+    });
+    root.querySelectorAll(".like-btn").forEach(function (btn) {
+      var id = btn.getAttribute("data-like-for"), cnt = btn.querySelector(".cnt");
+      if (localStorage.getItem("eyeless-like-" + id) === "1") { btn.classList.add("liked"); btn.setAttribute("aria-pressed", "true"); }
+      ctGet("likes-" + id).then(function (v) { if (v != null) cnt.textContent = v; }).catch(function () {});
+      btn.addEventListener("click", function () {
+        if (btn.classList.contains("liked")) return;                 // jeden lajk na prohlížeč
+        btn.classList.add("liked"); btn.setAttribute("aria-pressed", "true");
+        localStorage.setItem("eyeless-like-" + id, "1");
+        cnt.textContent = (parseInt(cnt.textContent, 10) || 0) + 1;   // optimisticky
+        ctHit("likes-" + id).then(function (v) { cnt.textContent = v; }).catch(function () {});
+      });
+    });
   }
 
   /* ---- HOME ---------------------------------------------------------- */
@@ -168,85 +197,55 @@
     if (hero) hero.textContent = D.site.tagline;
 
     var evWrap = qs("[data-events]");
-    if (evWrap) {
-      var ev = splitEvents(D), html = "";
-      if (!ev.up.length && !ev.past.length) {
-        html = '<p class="events-empty">Momentálně nemáme naplánované žádné akce. Sledujte nás na sítích!</p>';
-      } else {
-        html += ev.up.length
-          ? '<ul class="events-list">' + ev.up.map(function (e) { return eventCardHTML(e, false); }).join("") + "</ul>"
-          : '<p class="events-empty">Žádné nadcházející akce – ale brzo přidáme další!</p>';
-        if (ev.past.length) {
-          html += '<details class="past-details"><summary class="past-toggle">Zobrazit odehrané akce (' + ev.past.length + ")</summary>" +
-            '<ul class="events-list" style="margin-top:16px">' + ev.past.map(function (e) { return eventCardHTML(e, true); }).join("") + "</ul></details>";
-        }
-      }
-      evWrap.innerHTML = html;
-    }
+    if (evWrap) evWrap.innerHTML = eventsBlock(D, 3);
 
     var nWrap = qs("[data-news]");
-    if (nWrap) {
-      nWrap.innerHTML = (D.news || []).map(function (p) {
-        return '<article class="news-card"><a class="thumb" href="post.html?id=' + encodeURIComponent(p.id) + '">' +
-          '<img src="' + esc(p.image) + '" alt="' + esc(p.title) + '" loading="lazy" width="400" height="300"></a>' +
-          '<div class="body"><h3><a href="post.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.title) + "</a></h3>" +
-          "<p>" + esc(p.excerpt) + "</p>" +
-          '<div class="foot"><span>' + esc(p.author) + "</span><span>" + (p.views || 0) + " zobrazení</span>" +
-          '<span class="likes">♥ ' + (p.likes || 0) + "</span></div></div></article>";
-      }).join("");
-    }
-
-    var nextWrap = qs("[data-next-event]");
-    if (nextWrap) {
-      var next = splitEvents(D).up[0];
-      if (next) {
-        var ns = parseDate(next.start);
-        var where = next.venue ? esc(next.venue) + (next.city ? ", " + esc(next.city) : "") : esc(next.city || next.address || "");
-        nextWrap.innerHTML =
-          '<a class="hero-next-card" href="event.html?id=' + encodeURIComponent(next.id) + '">' +
-          '<span class="hn-label">Nejbližší akce</span>' +
-          '<span class="hn-date">' + (ns ? esc(shortDate(ns)) + " " + ns.getFullYear() : "") + "</span>" +
-          '<span class="hn-title">' + esc(next.title) + "</span>" +
-          (where ? '<span class="hn-where">' + where + "</span>" : "") +
-          '<span class="hn-go">Podrobnosti →</span></a>';
-      } else {
-        nextWrap.innerHTML = "";
-      }
-    }
+    if (nWrap) { nWrap.innerHTML = (D.news || []).slice(0, 3).map(newsCardHTML).join(""); hydrateNews(nWrap); }
 
     var aWrap = qs("[data-about]");
     if (aWrap && D.about) aWrap.innerHTML = D.about.paragraphs.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
 
     var mWrap = qs("[data-members]");
-    if (mWrap) {
-      mWrap.innerHTML = (D.members || []).map(function (m) {
-        return '<figure class="member"><div class="photo">' +
-          '<img src="' + esc(m.img) + '" alt="' + esc(m.name) + " – " + esc(m.nick) + '" loading="lazy" width="300" height="360"></div>' +
-          '<figcaption class="name"><span class="n">' + esc(m.name) + "</span>" +
-          '<span class="nick">#' + esc(m.num) + " " + esc(m.nick) + "</span></figcaption></figure>";
-      }).join("");
-    }
+    if (mWrap) mWrap.innerHTML = (D.members || []).map(function (m) {
+      return '<figure class="member"><div class="photo">' +
+        '<img src="' + esc(m.img) + '" alt="' + esc(m.name) + " – " + esc(m.nick) + '" loading="lazy" decoding="async" width="300" height="360"></div>' +
+        '<figcaption class="name"><span class="n">' + esc(m.name) + "</span>" +
+        '<span class="nick">#' + esc(m.num) + " " + esc(m.nick) + "</span></figcaption></figure>";
+    }).join("");
 
     setMeta(D, { title: D.site.fullName + " – " + D.site.tagline, description: D.site.description, url: D.site.baseUrl + "/", image: abs(D, "assets/logo.png") });
     jsonLd({ "@context": "https://schema.org", "@graph": [musicGroup(D)].concat(splitEvents(D).up.map(function (e) { return eventLd(D, e); })) });
   }
 
-  /* ---- DETAIL AKCE --------------------------------------------------- */
+  /* ---- Všechny akce (akce.html) ------------------------------------- */
+  function renderEventsAll(D) {
+    var host = qs("[data-events-all]"); if (!host) return;
+    host.innerHTML = eventsBlock(D, 0);
+    setMeta(D, { title: "Akce – " + D.site.fullName, description: "Všechny koncerty a akce Slipknot tribute kapely Eyeless.", url: D.site.baseUrl + "/akce.html", image: abs(D, "assets/logo.png") });
+    jsonLd({ "@context": "https://schema.org", "@graph": splitEvents(D).up.map(function (e) { return eventLd(D, e); }) });
+  }
+
+  /* ---- Všechny novinky (novinky.html) ------------------------------- */
+  function renderNewsAll(D) {
+    var host = qs("[data-news-all]"); if (!host) return;
+    host.innerHTML = (D.news || []).map(newsCardHTML).join("");
+    hydrateNews(host);
+    setMeta(D, { title: "Novinky – " + D.site.fullName, description: "Novinky a aktuality Slipknot tribute kapely Eyeless.", url: D.site.baseUrl + "/novinky.html", image: abs(D, "assets/logo.png") });
+  }
+
+  /* ---- Detail akce --------------------------------------------------- */
   function renderEvent(D) {
     var host = qs("[data-event-detail]"); if (!host) return;
     var ev = (D.events || []).filter(function (e) { return e.id === getParam("id"); })[0];
-    if (!ev) {
-      host.innerHTML = '<p class="events-empty">Akce nenalezena. <a href="index.html#akce">Zpět na přehled akcí</a>.</p>';
-      setMeta(D, { title: "Akce nenalezena – " + D.site.fullName }); return;
-    }
+    if (!ev) { host.innerHTML = '<p class="events-empty">Akce nenalezena. <a href="akce.html">Zpět na přehled akcí</a>.</p>'; setMeta(D, { title: "Akce nenalezena – " + D.site.fullName }); return; }
     var url = D.site.baseUrl + "/event.html?id=" + encodeURIComponent(ev.id);
-    var s = parseDate(ev.start), mapQ = encodeURIComponent(ev.address || ev.city || "");
+    var s = parseDate(ev.start), mapQ = encodeURIComponent(ev.address || ev.city || ""), img = eventImage(ev);
     host.innerHTML =
-      '<nav class="breadcrumb"><a href="index.html">Domů</a> / <a href="index.html#akce">Akce</a> / ' + esc(ev.title) + "</nav>" +
+      '<nav class="breadcrumb"><a href="index.html">Domů</a> / <a href="akce.html">Akce</a> / ' + esc(ev.title) + "</nav>" +
       '<h1 class="detail-title">' + esc(ev.title) + "</h1>" +
       (s ? '<div class="detail-sub">' + esc(fmtLong.format(s)) + "</div>" : "") +
       '<div class="detail-grid"><div class="detail-body">' +
-        (ev.poster ? '<div class="detail-poster"><img src="' + esc(ev.poster) + '" alt="' + esc(ev.title) + '"></div>' : "") +
+        (img ? '<div class="detail-poster"><img src="' + esc(img) + '" alt="' + esc(ev.title) + '" loading="eager" decoding="async"></div>' : "") +
         "<p>" + esc(ev.description || "") + "</p>" +
         '<div class="share"><span>Sdílet</span>' +
           '<a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '">Facebook</a>' +
@@ -267,75 +266,81 @@
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(done, done);
       else { try { var ta = document.createElement("textarea"); ta.value = link; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); done(); } catch (e) {} }
     });
-    setMeta(D, { title: ev.title + " – " + D.site.fullName, description: ev.description || ev.title, url: url, image: abs(D, ev.poster) || abs(D, "assets/logo.png") });
+    setMeta(D, { title: ev.title + " – " + D.site.fullName, description: ev.description || ev.title, url: url, image: abs(D, img) || abs(D, "assets/logo.png") });
     jsonLd({ "@context": "https://schema.org", "@graph": [eventLd(D, ev)] });
   }
 
-  /* ---- DETAIL NOVINKY ------------------------------------------------ */
+  /* ---- Detail novinky ------------------------------------------------ */
   function renderPost(D) {
     var host = qs("[data-post-detail]"); if (!host) return;
     var p = (D.news || []).filter(function (n) { return n.id === getParam("id"); })[0];
-    if (!p) {
-      host.innerHTML = '<p class="events-empty">Novinka nenalezena. <a href="index.html#novinky">Zpět na novinky</a>.</p>';
-      setMeta(D, { title: "Novinka nenalezena – " + D.site.fullName }); return;
-    }
+    if (!p) { host.innerHTML = '<p class="events-empty">Novinka nenalezena. <a href="novinky.html">Zpět na novinky</a>.</p>'; setMeta(D, { title: "Novinka nenalezena – " + D.site.fullName }); return; }
     var url = D.site.baseUrl + "/post.html?id=" + encodeURIComponent(p.id);
     host.innerHTML =
-      '<nav class="breadcrumb"><a href="index.html">Domů</a> / <a href="index.html#novinky">Novinky</a> / ' + esc(p.title) + "</nav>" +
+      '<nav class="breadcrumb"><a href="index.html">Domů</a> / <a href="novinky.html">Novinky</a> / ' + esc(p.title) + "</nav>" +
       '<h1 class="detail-title">' + esc(p.title) + "</h1>" +
       '<div class="detail-sub">' + esc(p.author) + " · " + esc(fmtFull.format(parseDate(p.date) || new Date())) + "</div>" +
-      (p.image ? '<div class="detail-poster" style="margin-bottom:24px"><img src="' + esc(p.image) + '" alt="' + esc(p.title) + '"></div>' : "") +
-      '<div class="detail-body">' + (p.body || [p.excerpt]).map(function (par) { return "<p>" + esc(par) + "</p>"; }).join("") + "</div>";
+      (p.image ? '<div class="detail-poster" style="margin-bottom:24px"><img src="' + esc(p.image) + '" alt="' + esc(p.title) + '" loading="eager" decoding="async"></div>' : "") +
+      '<div class="detail-body">' + (p.body || [p.excerpt]).map(function (par) { return "<p>" + esc(par) + "</p>"; }).join("") + "</div>" +
+      '<div class="post-foot">' +
+        '<span class="views" data-views-for="' + esc(p.id) + '">' + (p.views || 0) + " zobrazení</span>" +
+        '<button type="button" class="like-btn" data-like-for="' + esc(p.id) + '" aria-pressed="false" aria-label="To se mi líbí"><span class="hrt">♥</span> <span class="cnt">' + (p.likes || 0) + "</span></button>" +
+      "</div>";
+    // započítat zobrazení a navázat lajk
+    ctHit("views-" + p.id).then(function (v) { var el = qs("[data-views-for]", host); if (el && v != null) el.textContent = v + " zobrazení"; }).catch(function () {});
+    host.querySelectorAll(".like-btn").forEach(function (btn) {
+      var id = btn.getAttribute("data-like-for"), cnt = btn.querySelector(".cnt");
+      if (localStorage.getItem("eyeless-like-" + id) === "1") { btn.classList.add("liked"); btn.setAttribute("aria-pressed", "true"); }
+      ctGet("likes-" + id).then(function (v) { if (v != null) cnt.textContent = v; }).catch(function () {});
+      btn.addEventListener("click", function () {
+        if (btn.classList.contains("liked")) return;
+        btn.classList.add("liked"); btn.setAttribute("aria-pressed", "true"); localStorage.setItem("eyeless-like-" + id, "1");
+        cnt.textContent = (parseInt(cnt.textContent, 10) || 0) + 1;
+        ctHit("likes-" + id).then(function (v) { cnt.textContent = v; }).catch(function () {});
+      });
+    });
     setMeta(D, { title: p.title + " – " + D.site.fullName, description: p.excerpt, url: url, image: abs(D, p.image) || abs(D, "assets/logo.png") });
     jsonLd({ "@context": "https://schema.org", "@type": "NewsArticle", "headline": p.title, "datePublished": p.date,
-      "image": abs(D, p.image), "author": { "@type": "Person", "name": p.author }, "publisher": musicGroup(D),
-      "description": p.excerpt, "mainEntityOfPage": url });
+      "image": abs(D, p.image), "author": { "@type": "Person", "name": p.author }, "publisher": musicGroup(D), "description": p.excerpt, "mainEntityOfPage": url });
   }
 
-  /* ---- PRO POŘADATELE ------------------------------------------------ */
+  /* ---- Pro pořadatele ------------------------------------------------ */
   function renderOrganizer(D) {
     var host = qs("[data-organizer]"); if (!host || !D.organizer) return;
-    var o = D.organizer;
-    var docs = (o.documents || []).filter(function (d) { return d.url; });
+    var o = D.organizer, docs = (o.documents || []).filter(function (d) { return d.url; });
     var dl = '<svg class="dl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>';
     host.innerHTML =
       '<h1 class="detail-title">' + esc(o.heading) + "</h1>" +
       '<p class="about-lead">' + esc(o.intro) + "</p>" +
-      '<div class="req-grid">' + o.requirements.map(function (r) {
-        return '<div class="req"><h3>' + esc(r.title) + "</h3><p>" + esc(r.text) + "</p></div>";
-      }).join("") + "</div>" +
+      '<div class="req-grid">' + o.requirements.map(function (r) { return '<div class="req"><h3>' + esc(r.title) + "</h3><p>" + esc(r.text) + "</p></div>"; }).join("") + "</div>" +
       (docs.length ? '<section class="epk">' +
         (o.epkHeading ? '<h2 class="epk-heading">' + esc(o.epkHeading) + "</h2>" : "") +
         (o.epkIntro ? '<p class="epk-intro">' + esc(o.epkIntro) + "</p>" : "") +
-        '<div class="docs">' + docs.map(function (d) {
-          return '<a class="btn dl" href="' + esc(d.url) + '" download>' + dl + esc(d.label) + "</a>";
-        }).join("") + "</div></section>" : "") +
+        '<div class="docs">' + docs.map(function (d) { return '<a class="btn dl" href="' + esc(d.url) + '" download>' + dl + esc(d.label) + "</a>"; }).join("") + "</div></section>" : "") +
       '<p style="margin-top:32px"><a class="btn ghost" href="mailto:' + esc(D.site.email) + '">Napiš nám</a></p>';
-    setMeta(D, { title: "Pro pořadatele – " + D.site.fullName,
-      description: "Chceš Slipknot tribute Eyeless na svojí akci? Technické požadavky, rider, playlist a kontakt.",
-      url: D.site.baseUrl + "/pro-poradatele.html", image: abs(D, "assets/logo.png") });
+    setMeta(D, { title: "Pro pořadatele – " + D.site.fullName, description: "Chceš Slipknot tribute Eyeless na svojí akci? Technické požadavky, rider, playlist a kontakt.", url: D.site.baseUrl + "/pro-poradatele.html", image: abs(D, "assets/logo.png") });
   }
 
-  /* ---- Start: načti data.json a vykresli ----------------------------- */
+  /* ---- Start --------------------------------------------------------- */
   function boot(D) {
+    CT = D.site && D.site.counter;
     initChrome(D);
     var page = document.body.getAttribute("data-page");
     if (page === "home") renderHome(D);
+    else if (page === "events-all") renderEventsAll(D);
+    else if (page === "news-all") renderNewsAll(D);
     else if (page === "event") renderEvent(D);
     else if (page === "post") renderPost(D);
     else if (page === "organizer") renderOrganizer(D);
   }
   function fail(err) {
-    var main = qs("[data-events]") || qs("[data-event-detail]") || qs("[data-post-detail]") || qs("[data-organizer]") || qs("main");
-    if (main) main.innerHTML = '<p class="events-empty" style="padding:40px 0">Obsah se nepodařilo načíst.<br>' +
-      "Web je potřeba otevřít přes webovou adresu (http/https), ne přímo ze souboru na disku.</p>";
+    var main = qs("[data-events]") || qs("[data-events-all]") || qs("[data-news-all]") || qs("[data-event-detail]") || qs("[data-post-detail]") || qs("[data-organizer]") || qs("main");
+    if (main) main.innerHTML = '<p class="events-empty" style="padding:40px 0">Obsah se nepodařilo načíst.<br>Web je potřeba otevřít přes webovou adresu (http/https), ne přímo ze souboru na disku.</p>';
     console.error("data.json se nepodařilo načíst:", err);
   }
   function start() {
-    initMenu();  // menu funguje i kdyby se data nenačetla
-    fetch("data.json", { cache: "no-cache" })
-      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-      .then(boot).catch(fail);
+    initMenu();
+    fetch("data.json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }).then(boot).catch(fail);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();

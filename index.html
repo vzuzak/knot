@@ -22,10 +22,11 @@
   <link rel="icon" href="favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
+  <link rel="preload" as="image" href="assets/logo-white.webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Montserrat:wght@400;600;700;800&family=Jost:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=3">
+  <link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body data-page="home">
   <a class="skip-link" href="#main">Přeskočit na hlavní obsah</a>
@@ -38,8 +39,8 @@
       </button>
       <ul class="nav-links" id="nav-links">
         <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="index.html#akce">Akce</a></li>
-        <li><a href="index.html#novinky">Novinky</a></li>
+        <li><a href="akce.html">Akce</a></li>
+        <li><a href="novinky.html">Novinky</a></li>
         <li><a href="index.html#kdo-jsme">Kdo jsme</a></li>
         <li><a href="pro-poradatele.html">Pro pořadatele</a></li>
       </ul>
@@ -51,28 +52,29 @@
     <section class="hero">
       <div class="hero-bg" aria-hidden="true"></div>
       <div class="container hero-inner">
-        <img class="logo" src="assets/logo-white.png" alt="Eyeless – Slipknot Tribute CZ logo" width="882" height="459">
+        <img class="logo" src="assets/logo-white.webp" alt="Eyeless – Slipknot Tribute CZ logo" width="882" height="459" fetchpriority="high">
         <h1 class="tagline" data-hero-tagline>První Slipknot tribute v ČR!</h1>
         <div class="hero-actions">
           <a class="btn btn-lg" href="#akce">Nejbližší akce</a>
           <a class="btn btn-lg ghost" href="#novinky">Co chystáme</a>
         </div>
         <nav class="hero-social" aria-label="Sociální sítě kapely" data-social></nav>
-        <div class="hero-next" data-next-event></div>
       </div>
     </section>
 
     <section class="section" id="akce">
       <div class="container">
-        <div class="section-head"><h2>Akce</h2></div>
+        <div class="section-head"><a class="section-link" href="akce.html"><h2>Akce</h2></a></div>
         <div data-events><p class="events-empty">Načítám akce…</p></div>
+        <div class="section-more"><a class="btn ghost" href="akce.html">Všechny akce →</a></div>
       </div>
     </section>
 
     <section class="section" id="novinky">
       <div class="container">
-        <div class="section-head"><h2>Novinky</h2></div>
+        <div class="section-head"><a class="section-link" href="novinky.html"><h2>Novinky</h2></a></div>
         <div class="news-grid" data-news></div>
+        <div class="section-more"><a class="btn ghost" href="novinky.html">Všechny novinky →</a></div>
       </div>
     </section>
 
@@ -93,6 +95,6 @@
     </div>
   </footer>
 
-  <script src="js/app.js?v=3"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>

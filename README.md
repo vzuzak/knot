@@ -16,14 +16,19 @@ i sestavu. **Edituješ jen `data.json`** — nic se negeneruje, nic se nekompilu
 | Soubor | K čemu je |
 |---|---|
 | **`data.json`** | **Jediné místo, které edituješ** — akce, novinky, členové, kontakt, texty. |
-| `index.html` | Domů (hero, akce, novinky, kdo jsme). |
+| `index.html` | Domů (hero, 3 nejbližší akce, 3 poslední novinky, kdo jsme). |
+| `akce.html` | Kompletní seznam akcí (+ archiv odehraných). |
+| `novinky.html` | Kompletní seznam novinek. |
 | `event.html` | Detail akce — `event.html?id=<id-akce>`. |
 | `post.html` | Detail novinky — `post.html?id=<id-novinky>`. |
-| `pro-poradatele.html` | Stránka pro pořadatele. |
-| `js/app.js` | Načtení `data.json` + vykreslení. Needituje se kvůli obsahu. |
+| `pro-poradatele.html` | Stránka pro pořadatele (EPK ke stažení). |
+| `js/app.js` | Načtení `data.json` + vykreslení, počítadlo/lajky. |
 | `css/style.css` | Vzhled. |
-| `assets/` | Logo a fotky (`members/`, `news/`). |
+| `assets/` | Logo a fotky (`members/`, `news/`, `epk/`). WebP kvůli rychlosti. |
 | `sitemap.xml`, `robots.txt` | SEO. |
+
+Počítadlo zobrazení a lajky řeší zdarma služba **Abacus** (`site.counter` v `data.json`),
+takže není potřeba žádný backend.
 
 > ⚠️ **Důležité:** `fetch` funguje jen přes webovou adresu (**http/https**). Web tedy musí
 > běžet na hostingu (GitHub Pages, Netlify, Vercel, běžný webhosting/FTP…). Když soubor
