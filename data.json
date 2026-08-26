@@ -73,6 +73,20 @@
     }
   ],
   "news": [
+     {
+      "id": "novinky-zmena-foto-josef",
+      "title": "Bubeník si změnil profilovku!",
+      "date": "2026-08-26",
+      "author": "spudiljosef",
+      "image": "assets/members/1-josef-spudil.jfif",
+      "excerpt": "Bueník si změnil profilovku",
+      "body": [
+        "Našemu bubeníkovi se nelíbila jeho profilovka, takže se jí rozhodl změnit.",
+        "Nedávejte mu hlavně žádný lajky, aby si nemyslel, že se vám to líbí. Jen hejty!!!"
+      ],
+      "views": 1,
+      "likes": 0
+    },
     {
       "id": "zkouska-novinky",
       "title": "Slipknot má tribute v ČR!",
@@ -84,8 +98,8 @@
         "I do čech už konečně dorazila energine z Iowy a parta hudebníků se rozhodla vybudovat si jméno jako Slipknot tribute.",
         "První zkušební koncert mají za sebou a nyní to rozbalí naplno! Doražte na Melodku nebo do Českobudějovické Lucerny!"
       ],
-      "views": 0,
-      "likes": 0
+      "views": 15,
+      "likes": 7
     },
     {
       "id": "prvni-show-na-tyneckym-mazci",
