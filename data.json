@@ -24,6 +24,18 @@
   },
   "events": [
     {
+      "id": "eyeless-fajtfest-2027",
+      "title": "Fajtfest 2027",
+      "start": "2027-07-01T15:00:00+02:00",
+      "end": "2027-07-03T23:30:00+02:00",
+      "venue": "Velké Meziříčí",
+      "address": "Fajtův kopec, 59401 Velké Meziříčí",
+      "city": "Velké Meziříčí",
+      "description": "Maximální agrese 1. července na tebe čeká na Fajtfestu! SlipKnoT podaného jediným tribue v ČR - Eyeless a spousta dalších nadupanejch kapel!",
+      "ticketUrl": "",
+      "image": "assets/news/FB_fajtfest_2027_univerzalni.jpg"
+    },
+    {
       "id": "eyeless-blsany-2027",
       "title": "Green Valley fest",
       "start": "2027-07-10T20:00:00+02:00",
