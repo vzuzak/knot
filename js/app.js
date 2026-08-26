@@ -15,6 +15,15 @@
   function qs(sel, root) { return (root || document).querySelector(sel); }
   function getParam(name) { return new URLSearchParams(location.search).get(name); }
   function parseDate(s) { var d = new Date(s); return isNaN(d) ? null : d; }
+
+  // Po vykreslení obsahu (a po načtení písem) doskrolovat na kotvu z URL.
+  // Obsah se vykresluje až JS, takže nativní skok na #kotvu proběhne moc brzy.
+  function scrollToHash() {
+    if (!location.hash || location.hash === "#") return;
+    var el;
+    try { el = document.querySelector(location.hash); } catch (e) { return; }
+    if (el) el.scrollIntoView();
+  }
   function eventImage(ev) { return ev.image || ev.poster || ""; }
 
   var fmtDay  = new Intl.DateTimeFormat("cs-CZ", { day: "2-digit" });
@@ -167,26 +176,31 @@
       '<div class="body"><h3><a href="post.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.title) + "</a></h3>" +
       "<p>" + esc(p.excerpt) + "</p>" +
       '<div class="foot"><span class="author">' + esc(p.author) + "</span>" +
-      '<span class="views" data-views-for="' + esc(p.id) + '">' + (p.views || 0) + " zobrazení</span>" +
-      '<button type="button" class="like-btn" data-like-for="' + esc(p.id) + '" aria-pressed="false" aria-label="To se mi líbí">' +
+      '<span class="views" data-views-for="' + esc(p.id) + '" data-base="' + (p.views || 0) + '">' + (p.views || 0) + " zobrazení</span>" +
+      '<button type="button" class="like-btn" data-like-for="' + esc(p.id) + '" data-base="' + (p.likes || 0) + '" aria-pressed="false" aria-label="To se mi líbí">' +
       '<span class="hrt">♥</span> <span class="cnt">' + (p.likes || 0) + "</span></button>" +
       "</div></div></article>";
   }
-  function hydrateNews(root) {
+  // Zobrazené číslo = základ z data.json (data-base) + živé počítadlo (Abacus).
+  // hitViews=true → otevření novinky započítá zobrazení (jinak jen čte).
+  function hydrateNews(root, hitViews) {
     root.querySelectorAll("[data-views-for]").forEach(function (el) {
       var id = el.getAttribute("data-views-for");
-      ctGet("views-" + id).then(function (v) { if (v != null) el.textContent = v + " zobrazení"; }).catch(function () {});
+      var base = parseInt(el.getAttribute("data-base"), 10) || 0;
+      (hitViews ? ctHit("views-" + id) : ctGet("views-" + id))
+        .then(function (v) { if (v != null) el.textContent = (base + v) + " zobrazení"; }).catch(function () {});
     });
     root.querySelectorAll(".like-btn").forEach(function (btn) {
       var id = btn.getAttribute("data-like-for"), cnt = btn.querySelector(".cnt");
+      var base = parseInt(btn.getAttribute("data-base"), 10) || 0;
       if (localStorage.getItem("eyeless-like-" + id) === "1") { btn.classList.add("liked"); btn.setAttribute("aria-pressed", "true"); }
-      ctGet("likes-" + id).then(function (v) { if (v != null) cnt.textContent = v; }).catch(function () {});
+      ctGet("likes-" + id).then(function (v) { if (v != null) cnt.textContent = base + v; }).catch(function () {});
       btn.addEventListener("click", function () {
         if (btn.classList.contains("liked")) return;                 // jeden lajk na prohlížeč
         btn.classList.add("liked"); btn.setAttribute("aria-pressed", "true");
         localStorage.setItem("eyeless-like-" + id, "1");
         cnt.textContent = (parseInt(cnt.textContent, 10) || 0) + 1;   // optimisticky
-        ctHit("likes-" + id).then(function (v) { cnt.textContent = v; }).catch(function () {});
+        ctHit("likes-" + id).then(function (v) { if (v != null) cnt.textContent = base + v; }).catch(function () {});
       });
     });
   }
@@ -200,7 +214,7 @@
     if (evWrap) evWrap.innerHTML = eventsBlock(D, 3);
 
     var nWrap = qs("[data-news]");
-    if (nWrap) { nWrap.innerHTML = (D.news || []).slice(0, 3).map(newsCardHTML).join(""); hydrateNews(nWrap); }
+    if (nWrap) { nWrap.innerHTML = (D.news || []).slice(0, 3).map(newsCardHTML).join(""); hydrateNews(nWrap, false); }
 
     var aWrap = qs("[data-about]");
     if (aWrap && D.about) aWrap.innerHTML = D.about.paragraphs.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
@@ -215,6 +229,10 @@
 
     setMeta(D, { title: D.site.fullName + " – " + D.site.tagline, description: D.site.description, url: D.site.baseUrl + "/", image: abs(D, "assets/logo.png") });
     jsonLd({ "@context": "https://schema.org", "@graph": [musicGroup(D)].concat(splitEvents(D).up.map(function (e) { return eventLd(D, e); })) });
+
+    // obsah je vykreslený → doskrolovat na kotvu (#kdo-jsme apod.); zopakovat po písmech
+    scrollToHash();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(scrollToHash);
   }
 
   /* ---- Všechny akce (akce.html) ------------------------------------- */
@@ -229,7 +247,7 @@
   function renderNewsAll(D) {
     var host = qs("[data-news-all]"); if (!host) return;
     host.innerHTML = (D.news || []).map(newsCardHTML).join("");
-    hydrateNews(host);
+    hydrateNews(host, false);
     setMeta(D, { title: "Novinky – " + D.site.fullName, description: "Novinky a aktuality Slipknot tribute kapely Eyeless.", url: D.site.baseUrl + "/novinky.html", image: abs(D, "assets/logo.png") });
   }
 
@@ -283,22 +301,10 @@
       (p.image ? '<div class="detail-poster" style="margin-bottom:24px"><img src="' + esc(p.image) + '" alt="' + esc(p.title) + '" loading="eager" decoding="async"></div>' : "") +
       '<div class="detail-body">' + (p.body || [p.excerpt]).map(function (par) { return "<p>" + esc(par) + "</p>"; }).join("") + "</div>" +
       '<div class="post-foot">' +
-        '<span class="views" data-views-for="' + esc(p.id) + '">' + (p.views || 0) + " zobrazení</span>" +
-        '<button type="button" class="like-btn" data-like-for="' + esc(p.id) + '" aria-pressed="false" aria-label="To se mi líbí"><span class="hrt">♥</span> <span class="cnt">' + (p.likes || 0) + "</span></button>" +
+        '<span class="views" data-views-for="' + esc(p.id) + '" data-base="' + (p.views || 0) + '">' + (p.views || 0) + " zobrazení</span>" +
+        '<button type="button" class="like-btn" data-like-for="' + esc(p.id) + '" data-base="' + (p.likes || 0) + '" aria-pressed="false" aria-label="To se mi líbí"><span class="hrt">♥</span> <span class="cnt">' + (p.likes || 0) + "</span></button>" +
       "</div>";
-    // započítat zobrazení a navázat lajk
-    ctHit("views-" + p.id).then(function (v) { var el = qs("[data-views-for]", host); if (el && v != null) el.textContent = v + " zobrazení"; }).catch(function () {});
-    host.querySelectorAll(".like-btn").forEach(function (btn) {
-      var id = btn.getAttribute("data-like-for"), cnt = btn.querySelector(".cnt");
-      if (localStorage.getItem("eyeless-like-" + id) === "1") { btn.classList.add("liked"); btn.setAttribute("aria-pressed", "true"); }
-      ctGet("likes-" + id).then(function (v) { if (v != null) cnt.textContent = v; }).catch(function () {});
-      btn.addEventListener("click", function () {
-        if (btn.classList.contains("liked")) return;
-        btn.classList.add("liked"); btn.setAttribute("aria-pressed", "true"); localStorage.setItem("eyeless-like-" + id, "1");
-        cnt.textContent = (parseInt(cnt.textContent, 10) || 0) + 1;
-        ctHit("likes-" + id).then(function (v) { cnt.textContent = v; }).catch(function () {});
-      });
-    });
+    hydrateNews(host, true);   // otevření novinky = +1 zobrazení, + navázání lajku
     setMeta(D, { title: p.title + " – " + D.site.fullName, description: p.excerpt, url: url, image: abs(D, p.image) || abs(D, "assets/logo.png") });
     jsonLd({ "@context": "https://schema.org", "@type": "NewsArticle", "headline": p.title, "datePublished": p.date,
       "image": abs(D, p.image), "author": { "@type": "Person", "name": p.author }, "publisher": musicGroup(D), "description": p.excerpt, "mainEntityOfPage": url });
