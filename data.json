@@ -33,7 +33,7 @@
       "city": "Velké Meziříčí",
       "description": "Maximální agrese 1. července na tebe čeká na Fajtfestu! SlipKnoT podaného jediným tribue v ČR - Eyeless a spousta dalších nadupanejch kapel!",
       "ticketUrl": "",
-      "image": "assets/news/FB_fajtfest_2027_univerzalni.jpg"
+      "image": "assets/news/fajtfest-2027.webp"
     },
     {
       "id": "eyeless-blsany-2027",
@@ -73,12 +73,12 @@
     }
   ],
   "news": [
-     {
+    {
       "id": "novinky-zmena-foto-josef",
       "title": "Bubeník si změnil profilovku!",
       "date": "2026-08-26",
       "author": "spudiljosef",
-      "image": "assets/members/1-josef-spudil.jfif",
+      "image": "assets/members/1-josef-spudil.webp",
       "excerpt": "Bueník si změnil profilovku",
       "body": [
         "Našemu bubeníkovi se nelíbila jeho profilovka, takže se jí rozhodl změnit.",
@@ -162,7 +162,7 @@
       "num": "1",
       "name": "Josef Spudil",
       "nick": "Joey",
-      "img": "assets/members/1-josef-spudil.jfif"
+      "img": "assets/members/1-josef-spudil.webp"
     },
     {
       "num": "2",
