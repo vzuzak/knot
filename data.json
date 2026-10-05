@@ -32,7 +32,17 @@
       "address": "Louny, 439 01 Louny",
       "city": "Louny",
       "description": "Maximální agrese 10. července na tebe čeká v Karlovarském kraji v podobě SlipKnoT podaného jediným tribute v ČR - Eyeless!",
-      "ticketUrl": "",
+      <a title='Předprodej akce' target='_blank' class='smsticket-ibutton' href='https://www.smsticket.cz/vstupenky/76364-nu-metal-legendy-ko%D1%8Fn-slipknot-na-melodce?utm_campaign=smsticket-prodejni-tlacitko'>Předprodej akce</a>
+<script>
+    (function() {
+        var po = document.createElement('script');
+        po.async = true;
+        po.src = 'https://www.smsticket.cz/static/scripts/widgets/SaleAnchorSmall.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+    })();
+</script>
+      "ticketUrl": "https://www.smsticket.cz/vstupenky/76364-nu-metal-legendy-ko%D1%8Fn-slipknot-na-melodce?utm_campaign=smsticket-prodejni-odkaz",
       "image": ""
     },
     {
